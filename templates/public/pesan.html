@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Pesan - F3{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="wrap">
+        <div class="eyebrow-line"><span class="dash"></span> Mulai pesanan</div>
+        <h1>Form pemesanan</h1>
+        <p>Isi form di bawah, nanti kami balas lewat WhatsApp untuk konfirmasi ukuran dan jadwal.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="wrap form-wrap">
+        {% if submitted %}
+        <div class="success-box">
+            <svg width="54" height="54" viewBox="0 0 24 24" fill="none" style="display:block;margin:0 auto 16px;"><circle cx="12" cy="12" r="10" stroke="#7B1F2B" stroke-width="1.6"/><path d="M7 12l3 3 7-7" stroke="#7B1F2B" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <h2>Pemesanan berhasil!</h2>
+            <p>Terima kasih, pesanan Anda sudah kami terima. Kami akan menghubungi Anda lewat WhatsApp untuk konfirmasi.</p>
+            {% if wa_link %}
+            <p class="wa-note">Agar lebih cepat, boleh langsung konfirmasi lewat WhatsApp:</p>
+            <a href="{{ wa_link }}" target="_blank" rel="noopener" class="btn btn-wa">Konfirmasi via WhatsApp</a>
+            {% endif %}
+            <br>
+            <a href="{{ url_for('public.beranda') }}" class="btn btn-outline">Kembali ke beranda</a>
+        </div>
+        {% else %}
+        {% if error %}
+        <div class="form-error">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('public.pesan') }}" class="order-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nama_pelanggan">Nama lengkap <span class="req">*</span></label>
+                    <input type="text" id="nama_pelanggan" name="nama_pelanggan" required placeholder="Nama Anda">
+                </div>
+                <div class="form-group">
+                    <label for="no_wa">No. WhatsApp <span class="req">*</span></label>
+                    <input type="tel" id="no_wa" name="no_wa" required placeholder="08xxxxxxxxxx">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="layanan_id">Pilih layanan <span class="req">*</span></label>
+                    <select id="layanan_id" name="layanan_id" required>
+                        <option value="">-- Pilih layanan --</option>
+                        {% for item in layanan %}
+                        <option value="{{ item._id }}">{{ item.nama_jasa }} ({{ item.harga_kisaran }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="ukuran">Ukuran <span class="req">*</span></label>
+                    <input type="text" id="ukuran" name="ukuran" required placeholder="M, L, XL / 90, 95, 100">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="tanggal_jadi">Tanggal jadi diinginkan <span class="req">*</span></label>
+                <input type="date" id="tanggal_jadi" name="tanggal_jadi" required>
+            </div>
+            <div class="form-group">
+                <label for="catatan">Catatan (opsional)</label>
+                <textarea id="catatan" name="catatan" rows="4" placeholder="Model, bahan, warna, referensi, dll."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Kirim pemesanan</button>
+        </form>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

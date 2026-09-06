@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block title %}Beranda - F3{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="wrap">
+        <div class="eyebrow-line"><span class="dash"></span> Jahit rumahan, sejak 2008 · Jeneponto</div>
+        <h1>Setiap jahitan<br>dikerjakan <span class="accent">seolah untuk keluarga sendiri</span></h1>
+        <p class="lede">Jahit custom, permak, dan seragam dengan ukuran yang pas dan hasil rapi — dikerjakan langsung oleh Ibu Sumarni, ditemani secangkir kopi dan mesin jahit yang sudah menemani ratusan pelanggan.</p>
+        <div class="hero-actions">
+            <a href="{{ url_for('public.pesan') }}" class="btn btn-primary">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 14l1.5-4.2A6 6 0 1 1 6.3 12.6L2 14z" stroke="#4A2330" stroke-width="1.3"/></svg>
+                Chat via WhatsApp
+            </a>
+            <a href="{{ url_for('public.layanan') }}" class="btn-secondary">Lihat layanan &amp; harga</a>
+        </div>
+        <div class="hero-stats">
+            <div><div class="num">15+</div><div class="lbl">tahun pengalaman</div></div>
+            <div><div class="num">400+</div><div class="lbl">jahitan selesai</div></div>
+            <div><div class="num">2&#8211;5 hari</div><div class="lbl">rata-rata pengerjaan</div></div>
+        </div>
+    </div>
+</section>
+
+<div class="trustline">
+    <div class="wrap">
+        <div><strong>Bahan sendiri atau bawa sendiri</strong> — kami sesuaikan</div>
+        <div><strong>Ukuran diambil langsung</strong> di rumah/toko</div>
+        <div><strong>Revisi gratis</strong> jika ukuran kurang pas</div>
+    </div>
+</div>
+
+<section class="section" id="layanan">
+    <div class="wrap">
+        <div class="section-head">
+            <h2>Layanan pilihan</h2>
+            <p>Beberapa layanan yang paling sering dipesan. Klik &ldquo;lihat semua layanan&rdquo; untuk daftar lengkap dan kisaran harga.</p>
+        </div>
+        <div class="services">
+            {% for item in layanan[:3] %}
+            <div class="service-card">
+                {% if loop.index == 1 %}
+                <svg class="icon" viewBox="0 0 40 40" fill="none"><path d="M8 8l24 24M32 8L8 32" stroke="#7B1F2B" stroke-width="2" stroke-linecap="round"/></svg>
+                {% elif loop.index == 2 %}
+                <svg class="icon" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="14" stroke="#7B1F2B" stroke-width="2"/><path d="M20 12v8l6 4" stroke="#7B1F2B" stroke-width="2" stroke-linecap="round"/></svg>
+                {% else %}
+                <svg class="icon" viewBox="0 0 40 40" fill="none"><rect x="9" y="9" width="9" height="9" stroke="#7B1F2B" stroke-width="2"/><rect x="22" y="9" width="9" height="9" stroke="#7B1F2B" stroke-width="2"/><rect x="9" y="22" width="9" height="9" stroke="#7B1F2B" stroke-width="2"/><rect x="22" y="22" width="9" height="9" stroke="#7B1F2B" stroke-width="2"/></svg>
+                {% endif %}
+                <h3>{{ item.nama_jasa }}</h3>
+                <p>{{ item.deskripsi }}</p>
+                <div class="price">{{ item.harga_kisaran }}</div>
+            </div>
+            {% else %}
+            <div class="service-card">Layanan sedang diperbarui.</div>
+            {% endfor %}
+        </div>
+        <div class="center-btn"><a href="{{ url_for('public.layanan') }}" class="btn-secondary">Lihat semua layanan &amp; harga</a></div>
+    </div>
+</section>
+
+<section class="section section-tint" id="galeri">
+    <div class="wrap">
+        <div class="section-head">
+            <h2>Hasil jahitan kami</h2>
+            <p>Sebagian kecil dari jahitan yang sudah selesai dikerjakan.</p>
+        </div>
+        <div class="gallery-grid">
+            {% if galeri %}
+                {% for foto in galeri[:8] %}
+                <div class="gallery-item">
+                    <img src="{{ foto.url_foto }}" alt="{{ foto.keterangan or 'Hasil jahitan' }}" loading="lazy">
+                    {% if foto.keterangan %}<span class="gcaption">{{ foto.keterangan }}</span>{% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="gallery-item ph">Foto pelanggan 1</div>
+                <div class="gallery-item ph">Foto pelanggan 2</div>
+                <div class="gallery-item ph">Foto pelanggan 3</div>
+                <div class="gallery-item ph">Foto pelanggan 4</div>
+                <div class="gallery-item ph">Foto pelanggan 5</div>
+                <div class="gallery-item ph">Foto pelanggan 6</div>
+                <div class="gallery-item ph">Foto pelanggan 7</div>
+                <div class="gallery-item ph">Foto pelanggan 8</div>
+            {% endif %}
+        </div>
+        <div class="center-btn"><a href="{{ url_for('public.galeri') }}" class="btn-secondary">Lihat galeri lengkap</a></div>
+    </div>
+</section>
+
+<section class="section" id="tentang">
+    <div class="wrap about">
+        <div class="about-visual">
+            <svg width="60%" viewBox="0 0 100 100" fill="none">
+                <circle cx="50" cy="35" r="18" stroke="#4A2330" stroke-width="2"/>
+                <path d="M20 90c0-20 13-32 30-32s30 12 30 32" stroke="#4A2330" stroke-width="2"/>
+            </svg>
+        </div>
+        <div>
+            <h2>Dikerjakan sendiri, bukan lewat perantara</h2>
+            <p>Toko ini dimulai dari mesin jahit di ruang tamu, melayani tetangga yang butuh permak celana sekolah. Sekarang sudah melayani ratusan pelanggan di sekitar Jeneponto — tapi caranya masih sama: diukur teliti, dikerjakan sabar, dan diselesaikan tepat waktu.</p>
+            <p>Setiap pesanan dikerjakan langsung, tanpa dialihkan ke penjahit lain, supaya kualitas dan waktu pengerjaannya bisa dipastikan sendiri.</p>
+            <div class="about-quote">"Yang penting pas di badan dan rapi jahitannya — itu baru selesai namanya."</div>
+        </div>
+    </div>
+</section>
+
+<section class="section section-tint">
+    <div class="wrap">
+        <div class="section-head">
+            <h2>Kata pelanggan</h2>
+        </div>
+        <div class="testimonials">
+            <div class="t-card">
+                <p>"Permak celana kerja langsung pas, cuma nunggu sehari. Harganya juga wajar."</p>
+                <div class="t-name">— Pelanggan, Panakkukang</div>
+            </div>
+            <div class="t-card">
+                <p>"Jahitan gamis untuk acara keluarga rapi banget, ukurannya pas tanpa perlu revisi."</p>
+                <div class="t-name">— Pelanggan, Biringkanaya</div>
+            </div>
+            <div class="t-card">
+                <p>"Pesan seragam untuk 20 orang, semuanya selesai tepat waktu dan seragam ukurannya."</p>
+                <div class="t-name">— Perwakilan sekolah, Jeneponto</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="pesan">
+    <div class="wrap">
+        <div class="cta-band">
+            <h2>Siap dijahitkan? Chat dulu, tanpa perlu datang ke toko.</h2>
+            <a href="{{ url_for('public.pesan') }}" class="btn btn-primary">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 14l1.5-4.2A6 6 0 1 1 6.3 12.6L2 14z" stroke="#4A2330" stroke-width="1.3"/></svg>
+                Chat WhatsApp: 0812-3456-7890
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

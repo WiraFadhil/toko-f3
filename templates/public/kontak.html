@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Kontak - F3{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="wrap">
+        <div class="eyebrow-line"><span class="dash"></span> Di mana kami</div>
+        <h1>Hubungi kami</h1>
+        <p>Chat dulu saja biasanya lebih cepat — tapi kalau mau mampir, kami siap di tempat.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="wrap">
+        <div class="cta-band" style="margin-bottom:48px;">
+            <div>
+                <h2>Chat langsung ke WhatsApp</h2>
+                <div style="color:rgba(245,239,227,.85);font-size:15px;margin-top:8px;">0812-3456-7890 · dibalas Senin&#8211;Sabtu, 09.00&#8211;17.00</div>
+            </div>
+            <a href="https://wa.me/6281234567890" target="_blank" rel="noopener" class="btn btn-primary">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 14l1.5-4.2A6 6 0 1 1 6.3 12.6L2 14z" stroke="#4A2330" stroke-width="1.3"/></svg>
+                Chat WhatsApp
+            </a>
+        </div>
+
+        <div class="services" style="grid-template-columns:repeat(3,1fr);">
+            <div class="service-card">
+                <h3>Alamat</h3>
+                <p>Jl. Contoh Alamat No. 12<br>Jeneponto, Sulawesi Selatan</p>
+            </div>
+            <div class="service-card">
+                <h3>Jam buka</h3>
+                <p>Senin&#8211;Sabtu: 09.00&#8211;17.00<br>Minggu: tutup</p>
+            </div>
+            <div class="service-card">
+                <h3>Instagram</h3>
+                <p>@jahitibuaminah<br>Update hasil jahitan di feed &amp; story</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section section-tint">
+    <div class="wrap">
+        <div class="section-head">
+            <h2>Peta lokasi</h2>
+        </div>
+        <div class="about-visual" style="aspect-ratio:16/6;max-width:100%;">
+            <div style="text-align:center;color:var(--ink-soft);font-size:15px;">
+                Tempatkan Google Maps Embed di sini<br>
+                <span style="font-size:13px;">(cari alamat toko Anda di Google Maps → Bagikan → Salin embed)</span>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Dashboard - Admin F3{% endblock %}
+
+{% block content %}
+<div class="container admin-container">
+    <h1 class="admin-page-title">Dashboard</h1>
+    <p class="admin-page-sub">Selamat datang, {{ current_user.username }}!</p>
+
+    <div class="stat-grid">
+        <div class="stat-card stat-bar">
+            <i>Baru</i>
+            <div>
+                <h3>{{ pesanan_baru }}</h3>
+                <p>Pesanan Baru</p>
+            </div>
+        </div>
+        <div class="stat-card stat-progress">
+            <i>Proses</i>
+            <div>
+                <h3>{{ pesanan_dikerjakan }}</h3>
+                <p>Dikerjakan</p>
+            </div>
+        </div>
+        <div class="stat-card stat-done">
+            <i>Selesai</i>
+            <div>
+                <h3>{{ pesanan_selesai }}</h3>
+                <p>Selesai</p>
+            </div>
+        </div>
+        <div class="stat-card stat-cancel">
+            <i>Batal</i>
+            <div>
+                <h3>{{ pesanan_dibatalkan }}</h3>
+                <p>Dibatalkan</p>
+            </div>
+        </div>
+        <div class="stat-card stat-info">
+            <i>Layan</i>
+            <div>
+                <h3>{{ total_layanan }}</h3>
+                <p>Layanan</p>
+            </div>
+        </div>
+        <div class="stat-card stat-info">
+            <i>Foto</i>
+            <div>
+                <h3>{{ total_foto }}</h3>
+                <p>Foto Galeri</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-head">
+            <h2>Pesanan Terbaru</h2>
+            <a href="{{ url_for('admin.pesanan_list') }}" class="btn btn-outline btn-sm">Lihat Semua</a>
+        </div>
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Pelanggan</th>
+                        <th>No. WA</th>
+                        <th>Ukuran</th>
+                        <th>Tanggal Jadi</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in recent %}
+                    <tr>
+                        <td>{{ p.nama_pelanggan }}</td>
+                        <td>{{ p.no_wa }}</td>
+                        <td>{{ p.ukuran }}</td>
+                        <td>{{ p.tanggal_jadi_diinginkan }}</td>
+                        <td><span class="badge badge-{{ p.status }}">{{ status_label[p.status] if p.status in status_label else p.status }}</span></td>
+                        <td><a href="{{ url_for('admin.pesanan_detail', pesanan_id=p._id) }}" class="btn btn-info btn-xs">Detail</a></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="6" class="empty-cell">Belum ada pesanan.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="quick-actions">
+        <a href="{{ url_for('public.pesan') }}" target="_blank" class="btn btn-primary">Form Pemesanan</a>
+        <a href="{{ url_for('admin.layanan_manage') }}" class="btn btn-outline">Kelola Layanan</a>
+        <a href="{{ url_for('admin.galeri_manage') }}" class="btn btn-outline">Kelola Galeri</a>
+    </div>
+</div>
+{% endblock %}

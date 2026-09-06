@@ -1,0 +1,138 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Layanan - Admin F3{% endblock %}
+
+{% block content %}
+<div class="container admin-container">
+    <h1 class="admin-page-title">Kelola Layanan</h1>
+    <p class="admin-page-sub">Tambah, edit, dan hapus daftar layanan</p>
+
+    <div class="panel">
+        <div class="panel-head"><h2>Tambah Layanan Baru</h2></div>
+        <form method="POST" action="{{ url_for('admin.layanan_manage') }}" class="order-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nama_jasa">Nama Jasa <span class="req">*</span></label>
+                    <input type="text" id="nama_jasa" name="nama_jasa" required placeholder="Contoh: Jahit Kebaya">
+                </div>
+                <div class="form-group">
+                    <label for="kategori">Kategori <span class="req">*</span></label>
+                    <select id="kategori" name="kategori" required>
+                        <option value="custom">Custom</option>
+                        <option value="permak">Permak</option>
+                        <option value="seragam">Seragam</option>
+                        <option value="lainnya">Lainnya</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="harga_kisaran">Harga Kisaran <span class="req">*</span></label>
+                    <input type="text" id="harga_kisaran" name="harga_kisaran" required placeholder="Contoh: Rp 150.000 - Rp 300.000">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="deskripsi">Deskripsi</label>
+                <textarea id="deskripsi" name="deskripsi" rows="3" placeholder="Deskripsi singkat tentang layanan"></textarea>
+            </div>
+            <div class="form-group checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="aktif" checked> Aktif ditampilkan di situs
+                </label>
+            </div>
+            <button type="submit" class="btn btn-primary">Tambah Layanan</button>
+        </form>
+    </div>
+
+    <div class="panel">
+        <div class="panel-head"><h2>Daftar Layanan</h2></div>
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Nama Jasa</th>
+                        <th>Kategori</th>
+                        <th>Harga</th>
+                        <th>Deskripsi</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for l in layanan %}
+                    <tr>
+                        <td>{{ l.nama_jasa }}</td>
+                        <td><span class="badge badge-kategori">{{ l.kategori }}</span></td>
+                        <td>{{ l.harga_kisaran }}</td>
+                        <td class="desc-cell">{{ l.deskripsi }}</td>
+                        <td>
+                            {% if l.aktif %}
+                            <span class="badge badge-selesai">Aktif</span>
+                            {% else %}
+                            <span class="badge badge-dibatalkan">Nonaktif</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button class="btn btn-info btn-xs" onclick="toggleEdit('{{ l._id }}')">Edit</button>
+                        </td>
+                    </tr>
+                    <tr id="edit-row-{{ l._id }}" class="edit-row" style="display:none;">
+                        <td colspan="6">
+                            <form method="POST" action="{{ url_for('admin.layanan_edit', layanan_id=l._id) }}" class="order-form edit-form">
+                                <input type="hidden" name="action" value="update">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Nama Jasa *</label>
+                                        <input type="text" name="nama_jasa" value="{{ l.nama_jasa }}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Kategori *</label>
+                                        <select name="kategori" required>
+                                            {% for k in ['custom', 'permak', 'seragam', 'lainnya'] %}
+                                            <option value="{{ k }}" {{ 'selected' if l.kategori == k else '' }}>{{ k|capitalize }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Harga Kisaran *</label>
+                                        <input type="text" name="harga_kisaran" value="{{ l.harga_kisaran }}" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Deskripsi</label>
+                                    <textarea name="deskripsi" rows="2">{{ l.deskripsi }}</textarea>
+                                </div>
+                                <div class="form-group checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="aktif" {{ 'checked' if l.aktif else '' }}> Aktif
+                                    </label>
+                                </div>
+                                <div class="btn-row">
+                                    <button type="submit" class="btn btn-success btn-sm">Simpan</button>
+                                    <button type="button" class="btn btn-outline btn-sm" onclick="toggleEdit('{{ l._id }}')">Batal</button>
+                                </div>
+                            </form>
+                            <form method="POST" action="{{ url_for('admin.layanan_edit', layanan_id=l._id) }}" class="inline-delete" onsubmit="return confirm('Yakin ingin menghapus layanan ini?');">
+                                <input type="hidden" name="action" value="delete">
+                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="6" class="empty-cell">Belum ada layanan.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function toggleEdit(id) {
+    var row = document.getElementById('edit-row-' + id);
+    if (row) {
+        row.style.display = row.style.display === 'none' ? '' : 'none';
+    }
+}
+</script>
+{% endblock %}

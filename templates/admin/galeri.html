@@ -1,0 +1,51 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Galeri - Admin F3{% endblock %}
+
+{% block content %}
+<div class="container admin-container">
+    <h1 class="admin-page-title">Kelola Galeri</h1>
+    <p class="admin-page-sub">Upload dan hapus foto hasil jahitan</p>
+
+    <div class="panel">
+        <div class="panel-head"><h2>Upload Foto Baru</h2></div>
+        <form method="POST" action="{{ url_for('admin.galeri_manage') }}" enctype="multipart/form-data" class="order-form">
+            <input type="hidden" name="action" value="upload">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="foto">File Foto <span class="req">*</span></label>
+                    <input type="file" id="foto" name="foto" accept="image/*" required>
+                </div>
+                <div class="form-group">
+                    <label for="keterangan">Keterangan (Opsional)</label>
+                    <input type="text" id="keterangan" name="keterangan" placeholder="Contoh: Gaun pesta custom">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Upload Foto</button>
+        </form>
+    </div>
+
+    <div class="panel">
+        <div class="panel-head"><h2>Foto Galeri ({{ galeri|length }})</h2></div>
+        <div class="admin-gallery-grid">
+            {% for foto in galeri %}
+            <div class="admin-gallery-item">
+                <img src="{{ foto.url_foto }}" alt="{{ foto.keterangan or 'Foto galeri' }}" loading="lazy">
+                <div class="admin-gallery-info">
+                    <p>{{ foto.keterangan or 'Tanpa keterangan' }}</p>
+                    <form method="POST" action="{{ url_for('admin.galeri_manage') }}" onsubmit="return confirm('Yakin ingin menghapus foto ini?');">
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="foto_id" value="{{ foto._id }}">
+                        <button type="submit" class="btn btn-danger btn-xs">Hapus</button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-state full">
+                <p>Belum ada foto galeri.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

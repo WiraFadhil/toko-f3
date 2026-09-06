@@ -1,0 +1,91 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Detail Pesanan - Admin F3{% endblock %}
+
+{% block content %}
+<div class="container admin-container">
+    <div class="page-head-row">
+        <div>
+            <h1 class="admin-page-title">Detail Pesanan</h1>
+            <p class="admin-page-sub">Pesanan dari {{ pesanan.nama_pelanggan }}</p>
+        </div>
+        <a href="{{ url_for('admin.pesanan_list') }}" class="btn btn-outline btn-sm">&larr; Kembali</a>
+    </div>
+
+    <div class="detail-grid">
+        <div class="panel">
+            <div class="panel-head"><h2>Informasi Pelanggan</h2></div>
+            <div class="detail-list">
+                <div class="detail-row">
+                    <span class="detail-label">Nama</span>
+                    <span class="detail-value">{{ pesanan.nama_pelanggan }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">No. WA</span>
+                    <span class="detail-value">
+                        {{ pesanan.no_wa }}
+                        <a href="https://wa.me/{{ pesanan.no_wa }}" target="_blank" rel="noopener" class="btn btn-wa btn-xs">Chat</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-head"><h2>Detail Pemesanan</h2></div>
+            <div class="detail-list">
+                <div class="detail-row">
+                    <span class="detail-label">Layanan</span>
+                    <span class="detail-value">{{ layanan.nama_jasa if layanan else '-' }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Harga Kisaran</span>
+                    <span class="detail-value">{{ layanan.harga_kisaran if layanan else '-' }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Ukuran</span>
+                    <span class="detail-value">{{ pesanan.ukuran }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Tanggal Jadi Diinginkan</span>
+                    <span class="detail-value">{{ pesanan.tanggal_jadi_diinginkan }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Dibuat</span>
+                    <span class="detail-value">{{ pesanan.created_at.strftime('%d/%m/%Y %H:%M') if pesanan.created_at else '-' }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Status</span>
+                    <span class="detail-value"><span class="badge badge-{{ pesanan.status }}">{{ status_label[pesanan.status] if pesanan.status in status_label else pesanan.status }}</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if pesanan.catatan %}
+    <div class="panel">
+        <div class="panel-head"><h2>Catatan Pelanggan</h2></div>
+        <p class="detail-note">{{ pesanan.catatan }}</p>
+    </div>
+    {% endif %}
+
+    <div class="panel">
+        <div class="panel-head"><h2>Update Status</h2></div>
+        <form method="POST" action="{{ url_for('admin.pesanan_detail', pesanan_id=pesanan._id) }}" class="status-form">
+            <input type="hidden" name="action" value="update_status">
+            <select name="status" required>
+                {% for key, label in status_label.items() %}
+                <option value="{{ key }}" {{ 'selected' if pesanan.status == key else '' }}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">Perbarui Status</button>
+        </form>
+    </div>
+
+    <div class="danger-zone">
+        <form method="POST" action="{{ url_for('admin.pesanan_detail', pesanan_id=pesanan._id) }}" onsubmit="return confirm('Yakin ingin menghapus pesanan ini?');">
+            <input type="hidden" name="action" value="delete">
+            <button type="submit" class="btn btn-danger btn-sm">Hapus Pesanan</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

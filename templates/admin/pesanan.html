@@ -1,0 +1,53 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Pesanan - Admin F3{% endblock %}
+
+{% block content %}
+<div class="container admin-container">
+    <h1 class="admin-page-title">Daftar Pesanan</h1>
+    <p class="admin-page-sub">Kelola semua pesanan pelanggan</p>
+
+    <div class="filter-tabs">
+        <a href="{{ url_for('admin.pesanan_list') }}" class="filter-tab {{ 'active' if not status else '' }}">Semua</a>
+        {% for key, label in status_label.items() %}
+        <a href="{{ url_for('admin.pesanan_list', status=key) }}" class="filter-tab {{ 'active' if status == key else '' }}">{{ label }}</a>
+        {% endfor %}
+    </div>
+
+    <div class="panel">
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Pelanggan</th>
+                        <th>No. WA</th>
+                        <th>Layanan</th>
+                        <th>Ukuran</th>
+                        <th>Tanggal Jadi</th>
+                        <th>Status</th>
+                        <th>Dibuat</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in pesanan %}
+                    {% set lay = layanan_map.get(p.layanan_id|string) %}
+                    <tr>
+                        <td>{{ p.nama_pelanggan }}</td>
+                        <td>{{ p.no_wa }}</td>
+                        <td>{{ lay.nama_jasa if lay else '-' }}</td>
+                        <td>{{ p.ukuran }}</td>
+                        <td>{{ p.tanggal_jadi_diinginkan }}</td>
+                        <td><span class="badge badge-{{ p.status }}">{{ status_label[p.status] if p.status in status_label else p.status }}</span></td>
+                        <td>{{ p.created_at.strftime('%d/%m/%Y %H:%M') if p.created_at else '-' }}</td>
+                        <td><a href="{{ url_for('admin.pesanan_detail', pesanan_id=p._id) }}" class="btn btn-info btn-xs">Detail</a></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="8" class="empty-cell">Belum ada pesanan.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
