@@ -12,16 +12,21 @@ app.config['CLOUDINARY_API_KEY'] = config.CLOUDINARY_API_KEY
 app.config['CLOUDINARY_API_SECRET'] = config.CLOUDINARY_API_SECRET
 
 mongo_client = None
+_db = None
 
 
 def get_db():
-    global mongo_client
+    global mongo_client, _db
+    if _db is not None:
+        return _db
     if mongo_client is None:
         mongo_client = MongoClient(app.config['MONGODB_URI'])
-    db_name = app.config['MONGODB_URI'].rsplit('/', 1)[-1]
-    if not db_name or '/' in db_name:
+    uri = app.config['MONGODB_URI']
+    db_name = uri.rsplit('/', 1)[-1].split('?')[0]
+    if not db_name:
         db_name = 'toko_jahit'
-    return mongo_client[db_name]
+    _db = mongo_client[db_name]
+    return _db
 
 
 login_manager = LoginManager()
@@ -88,7 +93,18 @@ def init_database():
         print(f'WARNING: init database dilewati ({e})')
 
 
-init_database()
+_db_initialized = False
+
+
+@app.before_request
+def ensure_db_initialized():
+    global _db_initialized
+    if not _db_initialized:
+        _db_initialized = True
+        try:
+            init_database()
+        except Exception as e:
+            print(f'WARNING: init database dilewati ({e})')
 
 
 @app.route('/health')
