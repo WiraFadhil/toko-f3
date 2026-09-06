@@ -102,7 +102,10 @@ def init_admin_user():
 def init_database():
     """Buat akun admin + collection/index, lalu seed data awal bila masih kosong."""
     try:
-        init_admin_user()
+        try:
+            init_admin_user()
+        except Exception as e:
+            print(f'WARNING: init admin user dilewati ({e})')
         from seed import init_data
         seeded = init_data(get_db())
         created = [name for name, ok in seeded.items() if ok]
