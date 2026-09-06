@@ -2,16 +2,21 @@ import os
 from flask import Flask, redirect, url_for
 from flask_login import LoginManager
 from pymongo import MongoClient
+from jinja2 import DictLoader
 
 import config
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+from embedded_templates import TEMPLATES
+from embedded_static import STATIC
 
 app = Flask(
     __name__,
     template_folder=os.path.join(BASE_DIR, 'templates'),
     static_folder=os.path.join(BASE_DIR, 'static')
 )
+app.jinja_loader = DictLoader(TEMPLATES)
 app.config['SECRET_KEY'] = config.SECRET_KEY
 app.config['MONGODB_URI'] = config.MONGODB_URI
 app.config['CLOUDINARY_CLOUD_NAME'] = config.CLOUDINARY_CLOUD_NAME
@@ -70,6 +75,15 @@ from routes.admin import admin_bp
 
 app.register_blueprint(public_bp)
 app.register_blueprint(admin_bp)
+
+
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    from flask import Response, send_from_directory
+    if filename in STATIC:
+        content_type = 'text/css' if filename.endswith('.css') else 'application/javascript'
+        return Response(STATIC[filename], mimetype=content_type)
+    return send_from_directory(os.path.join(BASE_DIR, 'static'), filename)
 
 
 def init_admin_user():
