@@ -133,5 +133,25 @@ def health():
     return 'OK'
 
 
+@app.route('/debug')
+def debug_info():
+    import os as _os
+    lines = []
+    lines.append(f'<b>MONGODB_URI set:</b> {bool(app.config["MONGODB_URI"])}')
+    lines.append(f'<b>MONGODB_URI value:</b> {app.config["MONGODB_URI"]}')
+    lines.append(f'<b>SECRET_KEY set:</b> {bool(app.config["SECRET_KEY"])}')
+    lines.append(f'<b>CLOUD_NAME set:</b> {bool(app.config["CLOUDINARY_CLOUD_NAME"])}')
+    try:
+        db = get_db()
+        count_layanan = db["layanan"].count_documents({})
+        count_galeri = db["galeri"].count_documents({})
+        lines.append(f'<b>DB connect:</b> OK')
+        lines.append(f'<b>layanan count:</b> {count_layanan}')
+        lines.append(f'<b>galeri count:</b> {count_galeri}')
+    except Exception as e:
+        lines.append(f'<b>DB connect:</b> FAIL -> {e}')
+    return '<br>'.join(lines)
+
+
 if __name__ == '__main__':
     app.run(debug=True)
