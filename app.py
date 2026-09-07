@@ -72,9 +72,11 @@ def load_user(user_id):
 
 from routes.public import public_bp
 from routes.admin import admin_bp
+from routes.chat import chat_bp
 
 app.register_blueprint(public_bp)
 app.register_blueprint(admin_bp)
+app.register_blueprint(chat_bp)
 
 
 @app.route('/static/<path:filename>')

@@ -1,0 +1,59 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Keluhan Customer - Admin F3{% endblock %}
+
+{% block content %}
+<div class="container admin-container">
+    <div class="page-head-row">
+        <div>
+            <h1 class="admin-page-title">Keluhan Customer</h1>
+            <p class="admin-page-sub">Keluhan/komplain dari chatbot AI yang perlu ditindaklanjuti</p>
+        </div>
+        <a href="{{ url_for('public.beranda') }}#kontak" target="_blank" class="btn btn-outline btn-sm">Lihat Kontak</a>
+    </div>
+
+    <div class="panel">
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Waktu</th>
+                        <th>Nama</th>
+                        <th>No. WA</th>
+                        <th>Pesan Customer</th>
+                        <th>Balasan AI / Catatan</th>
+                        <th>Provider</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for k in keluhan %}
+                    <tr>
+                        <td>{{ k.created_at.strftime('%d/%m/%Y %H:%M') if k.created_at else '-' }}</td>
+                        <td>{{ k.nama or '-' }}</td>
+                        <td>{{ k.no_wa or '-' }}</td>
+                        <td class="desc-cell">{{ k.message }}</td>
+                        <td class="desc-cell">{{ k.reply }}</td>
+                        <td>{{ k.provider or '-' }}</td>
+                        <td>
+                            <div class="btn-row" style="gap:6px;">
+                                {% if k.no_wa %}
+                                <a href="https://wa.me/{{ k.no_wa }}?text=Halo,%20saya%20dari%20F3.%20Admin" target="_blank" rel="noopener" class="btn btn-wa btn-xs">Balas WA</a>
+                                {% endif %}
+                                <form action="{{ url_for('admin.keluhan_list') }}" method="POST" style="display:inline;">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="log_id" value="{{ k._id }}">
+                                    <button type="submit" class="btn btn-danger btn-xs">Hapus</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="7" class="empty-cell">Belum ada keluhan masuk.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

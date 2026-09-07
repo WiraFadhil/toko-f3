@@ -14,6 +14,7 @@ from models.user import User
 from models.layanan import Layanan
 from models.pesanan import Pesanan
 from models.galeri import Galeri
+from models.chat_log import ChatLog
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -25,7 +26,8 @@ def get_models():
         'user': User(db),
         'layanan': Layanan(db),
         'pesanan': Pesanan(db),
-        'galeri': Galeri(db)
+        'galeri': Galeri(db),
+        'chat_log': ChatLog(db),
     }
 
 
@@ -86,6 +88,7 @@ def dashboard():
     pesanan_dibatalkan = models['pesanan'].count_by_status('dibatalkan')
     total_layanan = len(models['layanan'].all())
     total_foto = len(models['galeri'].all())
+    total_keluhan = models['chat_log'].count_keluhan()
 
     recent = models['pesanan'].all()[:5]
 
@@ -96,6 +99,7 @@ def dashboard():
                            pesanan_dibatalkan=pesanan_dibatalkan,
                            total_layanan=total_layanan,
                            total_foto=total_foto,
+                           total_keluhan=total_keluhan,
                            recent=recent,
                            status_label=Pesanan.STATUS_LABEL)
 
@@ -255,3 +259,19 @@ def galeri_manage():
 
     galeri_list = models['galeri'].all()
     return render_template('admin/galeri.html', galeri=galeri_list)
+
+
+@admin_bp.route('/keluhan')
+@login_required
+def keluhan_list():
+    models = get_models()
+    if request.method == 'POST':
+        action = request.form.get('action', '')
+        log_id = request.form.get('log_id', '')
+        if action == 'delete' and log_id:
+            models['chat_log'].collection.delete_one({'_id': ObjectId(log_id)})
+            flash('Keluhan dihapus.', 'success')
+            return redirect(url_for('admin.keluhan_list'))
+
+    keluhan = models['chat_log'].all(keluhan_only=True)
+    return render_template('admin/keluhan.html', keluhan=keluhan)
